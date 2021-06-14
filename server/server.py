@@ -12,8 +12,8 @@ DATABASE = "crudDB"
 try:
     mydb = mysql.connector.connect(
         host="localhost",
-        user="root",
-        password="rootadmin",
+        user="---",
+        password="---",
         database=DATABASE
     )
 
