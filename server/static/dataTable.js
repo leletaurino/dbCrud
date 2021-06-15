@@ -17,10 +17,7 @@ $(document).ready(function() {
                 dataType: "text",
                 contentType: 'application/json',
                 data: function (d) {
-                    var dteAction = d.action;
-                    var dteData = d.data;
-                    var key = Object.keys(dteData)[0];
-                    var formData = dteData[key];
+                    let formData = d.data[0];
                     formData.office = $('#DTE_Field_office').val();
                     return JSON.stringify(formData);
                 },
@@ -50,6 +47,10 @@ $(document).ready(function() {
 
                         case 514:
                             showAlert('Salary must be greater then 0.');
+                            break;
+
+                        case 515:
+                            showAlert('Input is too long.');
                             break;
 
                         default:
@@ -102,6 +103,10 @@ $(document).ready(function() {
                         case 514:
                             showAlert('Salary must be greater then 0.');
                         break;
+
+                        case 515:
+                            showAlert('Input is too long.');
+                            break;
 
                         default:
                             showAlert('Unexpected unknow error');

@@ -144,7 +144,7 @@ class Server(object):
             return json.dumps({'response': 'ok'})
         except Exception as e:
             logging.debug("record not inserted. Exception: ", e.__dict__['sqlstate'])
-            raise cherrypy.HTTPError(status=self.get_error_code(e.__dict__['sqlstate']), message=e.__dict__['sqlstate'])
+            raise cherrypy.HTTPError(status=self.get_error_code(e.__dict__['sqlstate']), message=e.__dict__['msg'])
 
     @cherrypy.expose()
     def update_data(self):
@@ -169,14 +169,15 @@ class Server(object):
             return json.dumps({'response': 'ok'})
         except Exception as e:
             logging.debug("record not updated. Exception: ", e.__dict__['sqlstate'])
-            raise cherrypy.HTTPError(status=self.get_error_code(e.__dict__['sqlstate']), message=e.__dict__['sqlstate'])
+            raise cherrypy.HTTPError(status=self.get_error_code(e.__dict__['sqlstate']), message=e.__dict__['msg'])
 
     @staticmethod
     def get_error_code(argument):
         switcher = {
             '01000': 512,
             '22007': 513,
-            '45000': 514
+            '45000': 514,
+            '22001': 515
         }
         return switcher.get(argument)
 
