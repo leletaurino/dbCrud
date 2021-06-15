@@ -8,3 +8,11 @@ Before starting make sure that you entered the correct mysql credentials.
 
 This is just an example but I hope it will be useful to someone.
 Enjoy it!
+
+
+For installing dependencies:
+
+  pip install -r requirements.txt
+
+
+(python version 3.9)
