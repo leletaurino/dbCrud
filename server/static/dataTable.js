@@ -1,5 +1,6 @@
 var editor; // use a global for the submit and return data rendering in the examples
 var office;
+var sex;
 $(document).ready(function() {
 
     function showAlert(message) {
@@ -55,6 +56,7 @@ $(document).ready(function() {
                 data: function (d) {
                     let formData = d.data[0];
                     formData.office = $('#DTE_Field_office').val();
+                    formData.sex = $('#DTE_Field_sex').val();
                     return JSON.stringify(formData);
                 },
                 success: function(response) {
@@ -106,6 +108,7 @@ $(document).ready(function() {
                     var key = Object.keys(dteData)[0];
                     var formData = dteData[key];
                     formData.office = $('#DTE_Field_office').val();
+                    formData.sex = $('#DTE_Field_sex').val();
                     formData.salary = formData.salary.replace(',', '.');
                     formData.DT_RowId = key.split('_')[1];
                     return JSON.stringify(formData);
@@ -190,8 +193,10 @@ $(document).ready(function() {
         },
 
             {
-            label: "Extension:",
-            name: "extn"
+            label: "Sex:",
+            name: "sex",
+            type: "select",
+            options: []
         }, {
             label: "Start date (*):",
             name: "start_date",
@@ -227,7 +232,9 @@ $(document).ready(function() {
                     $(o).html(dati[i]['name']);
                     $("#DTE_Field_office").append(o);
                 }
-
+                let m = new Option('M', 'M');
+                let f = new Option('F', 'F');
+                $("#DTE_Field_sex").html('').append(m).append(f);
                 //$('#DTE_Field_salary').attr('type','number').attr('min', 0);
             }
         });
@@ -250,6 +257,10 @@ $(document).ready(function() {
                     $(o).html(dati[i]['name']);
                     $("#DTE_Field_office").append(o);
                 }
+
+                let m = new Option('M', 'M');
+                let f = new Option('F', 'F');
+                $("#DTE_Field_sex").html('').append(m).append(f);
             }
         });
     });
@@ -278,7 +289,7 @@ $(document).ready(function() {
                 } },
             { data: "position" },
             { data: "office" },
-            { data: "extn" },
+            { data: "sex" },
             { data: "start_date" },
             { data: "salary", render: $.fn.dataTable.render.number( '.', ',', 2, '$' ) }
         ],

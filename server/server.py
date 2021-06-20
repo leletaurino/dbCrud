@@ -39,7 +39,7 @@ try:
                      'id INT AUTO_INCREMENT PRIMARY KEY,'
                      'name CHAR(40) NOT NULL,'
                      'city CHAR(40),'
-                     'n_department INT)')
+                     'n_departments INT)')
 
     mycursor.execute('CREATE TABLE employee('
                      'id INT AUTO_INCREMENT PRIMARY KEY,'
@@ -48,7 +48,7 @@ try:
                      'position CHAR(40),'
                      'cod_office INT NOT NULL,'
                      'FOREIGN KEY (cod_office) references office(id),'
-                     'extn INT,'
+                     'sex CHAR(1),'
                      'start_date DATETIME NOT NULL,'
                      'salary FLOAT)')
 
@@ -57,11 +57,11 @@ try:
     mydb.commit()
 
     val = [
-        ("ufficio_uno", "Roma", "1"),
-        ("ufficio_due", "Lecce", "2"),
-        ("ufficio_tre", "Verona", "3")
+        ("ufficio_uno", "Roma", "5"),
+        ("ufficio_due", "Lecce", "4"),
+        ("ufficio_tre", "Verona", "6")
     ]
-    sql = "INSERT INTO office (name, city, n_department) VALUES (%s, %s, %s)"
+    sql = "INSERT INTO office (name, city, n_departments) VALUES (%s, %s, %s)"
 
     for entry in val:
         mycursor.execute(sql, entry)
@@ -92,7 +92,7 @@ class Server(object):
                 "last_name": x[2],
                 "position": x[3],
                 "office": x[8],
-                "extn": x[5],
+                "sex": x[5],
                 "start_date": str(x[6]).split(' ')[0],
                 "salary": x[7],
             }
@@ -124,7 +124,7 @@ class Server(object):
                     "last_name": x[2],
                     "position": x[3],
                     "office": x[8],
-                    "extn": x[5],
+                    "sex": x[5],
                     "start_date": str(x[6]).split(' ')[0],
                     "salary": x[7],
                 }
@@ -144,7 +144,7 @@ class Server(object):
                 "id": x[0],
                 "name": x[1],
                 "city": x[2],
-                "n_department": x[3],
+                "n_departments": x[3],
             }
             data.append(item)
         return json.dumps({'data': data})
@@ -158,7 +158,7 @@ class Server(object):
         print(body)
 
         val = []
-        sql = "INSERT INTO employee (first_name, last_name, position, cod_office, extn, start_date, salary) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        sql = "INSERT INTO employee (first_name, last_name, position, cod_office, sex, start_date, salary) VALUES (%s, %s, %s, %s, %s, %s, %s)"
         for k, v in body.items():
             if v == '':
                 val.append(None)
@@ -184,7 +184,7 @@ class Server(object):
         print('body: ', body)
 
         val = []
-        sql = "UPDATE employee SET first_name=%s, last_name=%s, position=%s, cod_office=%s, extn=%s, start_date=%s, salary=%s WHERE id=%s"
+        sql = "UPDATE employee SET first_name=%s, last_name=%s, position=%s, cod_office=%s, sex=%s, start_date=%s, salary=%s WHERE id=%s"
         for k, v in body.items():
             if v == '':
                 val.append(None)
