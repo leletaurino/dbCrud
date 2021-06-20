@@ -12,8 +12,8 @@ DATABASE = "crudDB"
 try:
     mydb = mysql.connector.connect(
         host="localhost",
-        user="---",
-        password="---",
+        user="root",
+        password="rootadmin",
         database=DATABASE
     )
 
@@ -71,6 +71,35 @@ except Exception as insertFIELDS:
 
 
 class Server(object):
+    @cherrypy.expose()
+    def fetch_by_salary(self):
+        print("fetching data by minimum salary...")
+        cl = cherrypy.request.headers['Content-Length']
+        rawbody = cherrypy.request.body.read(int(cl))
+        salary = float(json.loads(rawbody)['salary'])
+
+        querySql = "SELECT employee.*, office.name FROM employee, office WHERE employee.cod_office = office.id AND employee.salary > %s"
+
+        mycursor.execute(querySql, (salary, ))
+        myresult = mycursor.fetchall()
+
+        data = []
+        for x in myresult:
+            # print(x)
+            item = {
+                "DT_RowId": "row_" + str(x[0]),
+                "first_name": x[1],
+                "last_name": x[2],
+                "position": x[3],
+                "office": x[8],
+                "extn": x[5],
+                "start_date": str(x[6]).split(' ')[0],
+                "salary": x[7],
+            }
+            data.append(item)
+
+        return json.dumps({'data': data})
+
     @cherrypy.expose()
     def get_data(self):
         print("getting data...")

@@ -40,8 +40,6 @@
 </div>
 
 
-
-
 <div id="customForm">
     <fieldset class="name">
         <legend>Name<span style="color: red">*</span></legend>
@@ -62,29 +60,59 @@
 </div>
 
 
-<table id="example" class="display" style="width:100%;">
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th>Position</th>
-        <th>Office</th>
-        <th>Extn.</th>
-        <th>Start date</th>
-        <th>Salary</th>
-    </tr>
-    </thead>
-    <tfoot>
-    <tr>
-        <th>Name</th>
-        <th>Position</th>
-        <th>Office</th>
-        <th>Extn.</th>
-        <th>Start date</th>
-        <th>Salary</th>
-    </tr>
-    </tfoot>
-</table>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col" style="padding: 10px 0 30px 10px;background-color: rgba(121,172,233,0.17)">
+            <h4> FILTERS</h4>
+        </div>
+        <div class="" style="border-bottom: solid darkgrey 1px;padding: 10px 0 30px 10px;margin-bottom: 30px; background-color: rgba(121,172,233,0.17)">
+            <div class="col" style="border-right: solid darkgrey 1px;width: 15%;">
+                <label>
+                    BY SALARY
+                    <br />
+                    <br />
+                    <input type="text" placeholder="min salary" value="0" id="min_salary">
+                </label>
+                <br />
+
+                <button id="submitBtn">Submit</button>
+                <button id="resetBtn">Reset</button>
+            </div>
+        </div>
+
+        <div class="col">
+            <table id="example" class="display col" style="width:100%;">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Office</th>
+                    <th>Extn.</th>
+                    <th>Start date</th>
+                    <th>Salary</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Office</th>
+                    <th>Extn.</th>
+                    <th>Start date</th>
+                    <th>Salary</th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+
 <style>
+    #example_wrapper{
+        margin: 10px;
+    }
     td {
         text-align: center;
     }

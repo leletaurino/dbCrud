@@ -8,6 +8,42 @@ $(document).ready(function() {
         $('#exampleModal').modal('show');
     }
 
+    $('#submitBtn').click(function (){
+        let actualVal = $('#min_salary');
+        if (actualVal.val() !== '0' && actualVal.val() && $.isNumeric(actualVal.val())){
+           $.ajax({
+              url: "/fetch_by_salary",
+              method: "POST",
+              data: JSON.stringify({ salary : $('#min_salary').val() }),
+              dataType: "json",
+              contentType: "application/json",
+               success: function (response){
+                  console.log(response);
+                  $('#example').DataTable().clear().rows.add(response.data).draw();
+               }
+            });
+        } if (!$.isNumeric(actualVal.val())){
+            showAlert('Check the input, insert only a number')
+        }
+    });
+
+    $('#resetBtn').click(function (){
+        let actualVal = $('#min_salary');
+        if (actualVal.val() !== '0'){
+           actualVal.val('0');
+           $.ajax({
+              url: "/get_data",
+              method: "GET",
+              dataType: "json",
+              contentType: "application/json",
+               success: function (response){
+                  console.log(response);
+                  $('#example').DataTable().clear().rows.add(response.data).draw();
+               }
+            });
+        }
+    });
+
     editor = new $.fn.dataTable.Editor( {
         ajax: {
             cache: true,
