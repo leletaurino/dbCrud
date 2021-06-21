@@ -9,6 +9,10 @@ $(document).ready(function() {
         $('#exampleModal').modal('show');
     }
 
+    $(document).on("change", "#DTE_Field_office",function(){
+        $('#DTE_Field_city').val($(this).children(":selected").attr("id"));
+    });
+
     $('#submitBtn').click(function (){
         let actualVal = $('#min_salary');
         if (actualVal.val() !== '0' && actualVal.val() && $.isNumeric(actualVal.val())){
@@ -182,21 +186,23 @@ $(document).ready(function() {
             label: "Last name (*):",
             name: "last_name"
         }, {
+                label: "Sex:",
+                name: "sex",
+                type: "select",
+                options: []
+        }, {
             label: "Position:",
             name: "position"
-        },
-        {
+        }, {
             label: "Name:",
             name: "office",
             type: "select",
             options: []
-        },
-
-            {
-            label: "Sex:",
-            name: "sex",
-            type: "select",
-            options: []
+        }, {
+            label: "City:",
+            name: "city",
+            type:'readonly',
+            attr:{ disabled:true }
         }, {
             label: "Start date (*):",
             name: "start_date",
@@ -230,11 +236,27 @@ $(document).ready(function() {
                 for (var i in dati){
                     var o = new Option(dati[i]['name'], dati[i]['id']);
                     $(o).html(dati[i]['name']);
+                    $(o).attr('id', dati[i]['city']);
+
+                    $.each(e.currentTarget.s.editData.office, function(key, value) {
+                        if(dati[i]['name'] === value)
+                            $(o).attr('selected', 'true');
+                    });
+
                     $("#DTE_Field_office").append(o);
                 }
                 let m = new Option('M', 'M');
                 let f = new Option('F', 'F');
+                $.each(e.currentTarget.s.editData.sex, function(key, value) {
+                    if(value === 'M')
+                        $(m).attr('selected', 'true');
+                    if(value === 'F')
+                        $(f).attr('selected', 'true');
+                });
                 $("#DTE_Field_sex").html('').append(m).append(f);
+                $.each(e.currentTarget.s.editData.city, function(key, value) {
+                    $("#DTE_Field_city").val(value);
+                });
                 //$('#DTE_Field_salary').attr('type','number').attr('min', 0);
             }
         });
@@ -254,6 +276,7 @@ $(document).ready(function() {
                 var dati = JSON.parse(response)['data'];
                 for (var i in dati){
                     var o = new Option(dati[i]['name'], dati[i]['id']);
+                    $(o).attr('id', dati[i]['city']);
                     $(o).html(dati[i]['name']);
                     $("#DTE_Field_office").append(o);
                 }
@@ -261,6 +284,7 @@ $(document).ready(function() {
                 let m = new Option('M', 'M');
                 let f = new Option('F', 'F');
                 $("#DTE_Field_sex").html('').append(m).append(f);
+                $("#DTE_Field_city").val(dati[0]['city']);
             }
         });
     });
@@ -287,9 +311,10 @@ $(document).ready(function() {
                     // Combine the first and last names into a single table field
                     return data.first_name+' '+data.last_name;
                 } },
+            { data: "sex" },
             { data: "position" },
             { data: "office" },
-            { data: "sex" },
+            { data: "city" },
             { data: "start_date" },
             { data: "salary", render: $.fn.dataTable.render.number( '.', ',', 2, '$' ) }
         ],

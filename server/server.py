@@ -52,7 +52,7 @@ try:
                      'start_date DATETIME NOT NULL,'
                      'salary FLOAT)')
 
-    mycursor.execute('CREATE VIEW first_view AS (SELECT employee.*, office.name FROM employee, office WHERE employee.cod_office = office.id)')
+    mycursor.execute('CREATE VIEW first_view AS (SELECT employee.*, office.name, office.city FROM employee, office WHERE employee.cod_office = office.id)')
 
     mydb.commit()
 
@@ -78,27 +78,13 @@ class Server(object):
         rawbody = cherrypy.request.body.read(int(cl))
         salary = float(json.loads(rawbody)['salary'])
 
-        querySql = "SELECT employee.*, office.name FROM employee, office WHERE employee.cod_office = office.id AND employee.salary > %s"
+        querySql = "SELECT employee.*, office.name, office.city FROM employee, office WHERE employee.cod_office = office.id AND employee.salary > %s"
 
         mycursor.execute(querySql, (salary, ))
-        myresult = mycursor.fetchall()
+        myresults = mycursor.fetchall()
 
-        data = []
-        for x in myresult:
-            # print(x)
-            item = {
-                "DT_RowId": "row_" + str(x[0]),
-                "first_name": x[1],
-                "last_name": x[2],
-                "position": x[3],
-                "office": x[8],
-                "sex": x[5],
-                "start_date": str(x[6]).split(' ')[0],
-                "salary": x[7],
-            }
-            data.append(item)
+        return self.get_formatted_data(myresults)
 
-        return json.dumps({'data': data})
 
     @cherrypy.expose()
     def get_data(self):
@@ -113,24 +99,7 @@ class Server(object):
         mycursor.callproc('findAll')
         myresults = mycursor.stored_results()
 
-        data = []
-        # print out the result
-        for myresult in myresults:
-            for x in myresult:
-                # print(x)
-                item = {
-                    "DT_RowId": "row_" + str(x[0]),
-                    "first_name": x[1],
-                    "last_name": x[2],
-                    "position": x[3],
-                    "office": x[8],
-                    "sex": x[5],
-                    "start_date": str(x[6]).split(' ')[0],
-                    "salary": x[7],
-                }
-                data.append(item)
-
-        return json.dumps({'data': data})
+        return self.get_formatted_data(myresults)
 
     @cherrypy.expose()
     def get_office_data(self):
@@ -154,11 +123,11 @@ class Server(object):
         print('create...')
         cl = cherrypy.request.headers['Content-Length']
         rawbody = cherrypy.request.body.read(int(cl))
-        body = json.loads(rawbody)
+        body = self.validation_data(json.loads(rawbody))
         print(body)
 
         val = []
-        sql = "INSERT INTO employee (first_name, last_name, position, cod_office, sex, start_date, salary) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        sql = "INSERT INTO employee (first_name, last_name, sex, position, cod_office, start_date, salary) VALUES (%s, %s, %s, %s, %s, %s, %s)"
         for k, v in body.items():
             if v == '':
                 val.append(None)
@@ -180,11 +149,11 @@ class Server(object):
         print('updating...')
         cl = cherrypy.request.headers['Content-Length']
         rawbody = cherrypy.request.body.read(int(cl))
-        body = json.loads(rawbody)
+        body = self.validation_data(json.loads(rawbody))
         print('body: ', body)
 
         val = []
-        sql = "UPDATE employee SET first_name=%s, last_name=%s, position=%s, cod_office=%s, sex=%s, start_date=%s, salary=%s WHERE id=%s"
+        sql = "UPDATE employee SET first_name=%s, last_name=%s, sex=%s, position=%s, cod_office=%s,  start_date=%s, salary=%s WHERE id=%s"
         for k, v in body.items():
             if v == '':
                 val.append(None)
@@ -209,6 +178,31 @@ class Server(object):
             '22001': 515
         }
         return switcher.get(argument)
+
+    @staticmethod
+    def get_formatted_data(myresults):
+        data = []
+        for myresult in myresults:
+            for x in myresult:
+                item = {
+                    "DT_RowId": "row_" + str(x[0]),
+                    "first_name": x[1],
+                    "last_name": x[2],
+                    "sex": x[5],
+                    "position": x[3],
+                    "office": x[8],
+                    "city": x[9],
+                    "start_date": str(x[6]).split(' ')[0],
+                    "salary": x[7],
+                }
+                data.append(item)
+
+        return json.dumps({'data': data})
+
+    @staticmethod
+    def validation_data(d):
+        invalid_fields = {"city"}
+        return {x: d[x] for x in d if x not in invalid_fields}
 
     @cherrypy.expose()
     def delete_data(self):
