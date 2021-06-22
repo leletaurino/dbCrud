@@ -82,9 +82,21 @@ class Server(object):
 
         mycursor.execute(querySql, (salary, ))
         myresults = mycursor.fetchall()
-
-        return self.get_formatted_data(myresults)
-
+        data = []
+        for x in myresults:
+            item = {
+                "DT_RowId": "row_" + str(x[0]),
+                "first_name": x[1],
+                "last_name": x[2],
+                "sex": x[5],
+                "position": x[3],
+                "office": x[8],
+                "city": x[9],
+                "start_date": str(x[6]).split(' ')[0],
+                "salary": x[7],
+            }
+            data.append(item)
+        return json.dumps({'data': data})
 
     @cherrypy.expose()
     def get_data(self):
